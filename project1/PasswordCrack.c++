@@ -74,7 +74,7 @@ TrieDictionary pullWords(int wordlength)
     {
       dic.insert(temp);
     }
-    std::cout<<"\n"<<temp;
+    //std::cout<<"\n"<<temp;
   }
   fileIn.close();
   return dic;
@@ -102,7 +102,7 @@ int main(int argc, char** argv)
     //std::cout<<s<<'\n';
     //std::cout<<"decrypt: "<<vigenereDecrypt(key1, s)<<"\n";
 
-    breakCipher(2, 4, "hello");
+    breakCipher(2, 3, "hello");
 
   }
   else

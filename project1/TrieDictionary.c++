@@ -5,18 +5,41 @@
 // C++ implementation of search and insert
 // operations on Trie
 
-#include <bits/stdc++.h>
+#include <iostream>
+#include <string>
+//#include "PasswordCrack.c++"
 using namespace std;
 
 const int ALPHABET_SIZE = 26;
 
+
+char chars[26] =
+{'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s',
+'t','u','v','w','x','y','z'};
+
+
 // trie node
-struct TrieNode
+struct TEMPORARY
 {
-    struct TrieNode *children[ALPHABET_SIZE];
+    struct TEMPORARY *children[ALPHABET_SIZE];
 
     // isEndOfWord is true if the node represents
     // end of a word
+    // x = chars[0];
+    bool isEndOfWord;
+};
+
+class Node
+{
+  public:
+    Node()
+    {
+      isEndOfWord = false;
+      for (int i=0; i<26; i++)
+        subtries[i] = nullptr;
+    }
+
+    Node* subtries[26];
     bool isEndOfWord;
 };
 
@@ -26,63 +49,65 @@ class TrieDictionary
 
 public:
 
-  struct TrieNode* m_root;
+  Node* m_root;
 
   TrieDictionary()
   {
     m_root = getNode();
   }
 
-
   // Returns new trie node (initialized to NULLs)
-  struct TrieNode *getNode(void)
+  Node* getNode()
   {
-      struct TrieNode *pNode =  new TrieNode;
+      // Node* temp =  new Node();
+      //
+      // pNode->isEndOfWord = false;
+      //
+      // for (int i = 0; i < ALPHABET_SIZE; i++)
+      //     pNode->children[i] = NULL;
 
-      pNode->isEndOfWord = false;
-
-      for (int i = 0; i < ALPHABET_SIZE; i++)
-          pNode->children[i] = NULL;
-
-      return pNode;
+      return new Node();
   }
 
   // If not present, inserts key into trie
   // If the key is prefix of trie node, just
   // marks leaf node
-  void insert(string key)
+  void insert(std::string key)
   {
-      struct TrieNode *pCrawl = m_root;
+      Node* traverse = m_root;
 
       for (int i = 0; i < key.length(); i++)
       {
           int index = key[i] - 'a';
-          if (!pCrawl->children[index])
-              pCrawl->children[index] = getNode();
-
-          pCrawl = pCrawl->children[index];
+          std::cout<<"key["<<i<<"]"<<key[i]
+                   <<"   index:"<<index<<"\n";
+          if (traverse->subtries[index] == nullptr)
+          {
+            traverse->subtries[index] = new Node();
+          }
+          traverse = traverse->subtries[index];
       }
 
       // mark last node as leaf
-      pCrawl->isEndOfWord = true;
+      traverse->isEndOfWord = true;
   }
 
   // Returns true if key presents in trie, else
   // false
-  bool search(string key)
+  bool search(std::string key)
   {
-      struct TrieNode *pCrawl = m_root;
+      Node* traverse = m_root;
 
       for (int i = 0; i < key.length(); i++)
       {
-          int index = key[i] - 'a';
-          if (!pCrawl->children[index])
+          int index = key[i] - 97;
+          if (traverse->subtries[index] == nullptr)
               return false;
 
-          pCrawl = pCrawl->children[index];
+          traverse = traverse->subtries[index];
       }
 
-      return (pCrawl != NULL && pCrawl->isEndOfWord);
+      return ((traverse != nullptr) && traverse->isEndOfWord);
   }
 
 
@@ -98,7 +123,7 @@ public:
 //                      "bye", "their" };
 //     int n = sizeof(keys)/sizeof(keys[0]);
 //
-//     struct TrieNode *root = getNode();
+//     struct TEMPORARY *root = getNode();
 //
 //     // Construct trie
 //     for (int i = 0; i < n; i++)
