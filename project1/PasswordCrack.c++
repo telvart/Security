@@ -1,14 +1,11 @@
 
-
 #include <iostream>
 #include <string>
 #include <algorithm>
 #include <fstream>
 #include "TrieDictionary.c++"
 
-
 char chars[] = {'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z'};
-
 
 std::string vigenereEncrypt(std::string key, std::string plaintext)
 {
@@ -66,30 +63,23 @@ TrieDictionary pullWords(int wordlength)
 {
   std::ifstream fileIn("dict.txt");
   std::string temp;
-  TrieDictionary dic = TrieDictionary(); //TODO figure out the segfault
+  TrieDictionary dic = TrieDictionary();
   while(fileIn >> temp)
   {
-
     if(temp.length() == wordlength)
     {
+      transform(temp.begin(), temp.end(), temp.begin(), ::tolower);
       dic.insert(temp);
     }
-    //std::cout<<"\n"<<temp;
   }
   fileIn.close();
   return dic;
-
-
-
-
 }
 
 void breakCipher(int keyLength, int firstWordLength, std::string ciphertext)
 {
   TrieDictionary d = pullWords(firstWordLength);
-
 }
-
 
 std::string key1 = "eecs";
 
@@ -102,7 +92,7 @@ int main(int argc, char** argv)
     //std::cout<<s<<'\n';
     //std::cout<<"decrypt: "<<vigenereDecrypt(key1, s)<<"\n";
 
-    breakCipher(2, 3, "hello");
+    breakCipher(2, 6, "hello");
 
   }
   else

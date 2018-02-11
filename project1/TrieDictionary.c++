@@ -1,33 +1,7 @@
 
-//NOTE: I did not write this code, it was taken from https://www.geeksforgeeks.org/trie-insert-and-search/
-//NOTE: I modified to make it a class and use it to store the dictionary for the password cracking
-
-// C++ implementation of search and insert
-// operations on Trie
-
 #include <iostream>
 #include <string>
-//#include "PasswordCrack.c++"
-using namespace std;
-
-const int ALPHABET_SIZE = 26;
-
-
-char chars[26] =
-{'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s',
-'t','u','v','w','x','y','z'};
-
-
-// trie node
-struct TEMPORARY
-{
-    struct TEMPORARY *children[ALPHABET_SIZE];
-
-    // isEndOfWord is true if the node represents
-    // end of a word
-    // x = chars[0];
-    bool isEndOfWord;
-};
+#include <map>
 
 class Node
 {
@@ -43,30 +17,36 @@ class Node
     bool isEndOfWord;
 };
 
-
 class TrieDictionary
 {
 
 public:
 
   Node* m_root;
+  std::map <char, int> alphabet;
+  std::map <char, int>::iterator it;
 
   TrieDictionary()
   {
-    m_root = getNode();
+    m_root = new Node();
+    init();
   }
 
-  // Returns new trie node (initialized to NULLs)
-  Node* getNode()
-  {
-      // Node* temp =  new Node();
-      //
-      // pNode->isEndOfWord = false;
-      //
-      // for (int i = 0; i < ALPHABET_SIZE; i++)
-      //     pNode->children[i] = NULL;
-
-      return new Node();
+  void init()
+  { //didnt want to write a loop lol
+    alphabet.insert(std::pair <char, int> ('a',0)); alphabet.insert(std::pair <char, int> ('b',1));
+    alphabet.insert(std::pair <char, int> ('c',2)); alphabet.insert(std::pair <char, int> ('d',3));
+    alphabet.insert(std::pair <char, int> ('e',4)); alphabet.insert(std::pair <char, int> ('f',5));
+    alphabet.insert(std::pair <char, int> ('g',6)); alphabet.insert(std::pair <char, int> ('h',7));
+    alphabet.insert(std::pair <char, int> ('i',8)); alphabet.insert(std::pair <char, int> ('j',9));
+    alphabet.insert(std::pair <char, int> ('k',10)); alphabet.insert(std::pair <char, int> ('l',11));
+    alphabet.insert(std::pair <char, int> ('m',12)); alphabet.insert(std::pair <char, int> ('n',13));
+    alphabet.insert(std::pair <char, int> ('o',14)); alphabet.insert(std::pair <char, int> ('p',15));
+    alphabet.insert(std::pair <char, int> ('q',16)); alphabet.insert(std::pair <char, int> ('r',17));
+    alphabet.insert(std::pair <char, int> ('s',18)); alphabet.insert(std::pair <char, int> ('t',19));
+    alphabet.insert(std::pair <char, int> ('u',20)); alphabet.insert(std::pair <char, int> ('v',21));
+    alphabet.insert(std::pair <char, int> ('w',22)); alphabet.insert(std::pair <char, int> ('x',23));
+    alphabet.insert(std::pair <char, int> ('y',24)); alphabet.insert(std::pair <char, int> ('z',25));
   }
 
   // If not present, inserts key into trie
@@ -75,12 +55,11 @@ public:
   void insert(std::string key)
   {
       Node* traverse = m_root;
+      int index;
 
       for (int i = 0; i < key.length(); i++)
       {
-          int index = key[i] - 'a';
-          std::cout<<"key["<<i<<"]"<<key[i]
-                   <<"   index:"<<index<<"\n";
+          index = alphabet.find(key[i]) -> second;
           if (traverse->subtries[index] == nullptr)
           {
             traverse->subtries[index] = new Node();
@@ -106,33 +85,9 @@ public:
 
           traverse = traverse->subtries[index];
       }
-
       return ((traverse != nullptr) && traverse->isEndOfWord);
   }
 
-
 };
 
-
-// int main()
-// {
-//     // Input keys (use only 'a' through 'z'
-//     // and lower case)
-//     string keys[] = {"the", "a", "there",
-//                     "answer", "any", "by",
-//                      "bye", "their" };
 //     int n = sizeof(keys)/sizeof(keys[0]);
-//
-//     struct TEMPORARY *root = getNode();
-//
-//     // Construct trie
-//     for (int i = 0; i < n; i++)
-//         insert(root, keys[i]);
-//
-//     // Search for different keys
-//     search(root, "the")? cout << "Yes\n" :
-//                          cout << "No\n";
-//     search(root, "these")? cout << "Yes\n" :
-//                            cout << "No\n";
-//     return 0;
-// }
