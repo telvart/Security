@@ -3,6 +3,9 @@
 #include <string>
 #include <algorithm>
 #include <fstream>
+#include <thread>
+#include <mutex>
+
 #include "TrieDictionary.c++"
 
 char chars[] = {'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z'};
@@ -101,7 +104,31 @@ void breakCipher(int keyLength, int firstWordLength, std::string ciphertext)
   TrieDictionary d = pullWords(firstWordLength);
 }
 
-std::string key1 = "eecs";
+/*
+1. "MSOKKJCOSXOEEKDTOSLGFWCMCHSUSGX";
+
+key length = 2; firstWordLength = 6
+
+2. "OOPCULNWFRCFQAQJGPNARMEYUODYOUNRGWORQEPVARCEPBBSCEQYEARAJUYGWWYACYWBPRNEJBMDTEAEYCCFJNENSGWAQRTSJTGXNRQRMDGFEEPHSJRGFCFMACCB"
+
+keyLength=3; firstWordLength = 7
+
+3. "MTZHZEOQKASVBDOWMWMKMNYIIHVWPEXJA"
+
+keyLength=4; firstWordLength = 10
+
+4. "HUETNMIXVTMQWZTQMMZUNZXNSSBLNSJVSJQDLKR"
+
+keyLength=5; firstWordLength = 11
+
+5. "LDWMEKPOPSWNOAVBIDHIPCEWAETYRVOAUPSINOVDIEDHCDSELHCCPVHRPOHZUSERSFS"
+
+keyLength=6; firstWordLength = 9
+
+6. "VVVLZWWPBWHZDKBTXLDCGOTGTGRWAQWZSDHEMXLBELUMO"
+
+keyLength=7; firstWordLength = 13
+*/
 
 int main(int argc, char** argv)
 {
@@ -113,7 +140,7 @@ int main(int argc, char** argv)
     //std::cout<<"decrypt: "<<vigenereDecrypt(key1, s)<<"\n";
 
     //breakCipher(2, 6, "hello");
-    generateKeys(2);
+    generateKeys(7);
 
   //}
   //else
