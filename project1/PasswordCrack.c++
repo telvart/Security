@@ -4,15 +4,14 @@
 #include <algorithm>
 #include <fstream>
 #include <thread>
-#include <mutex>
 
 #include "TrieDictionary.c++"
+#include "SyncQueue.hpp"
 
 char chars[] = {'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z'};
 
 std::string vigenereEncrypt(std::string key, std::string plaintext)
 {
-
   transform(plaintext.begin(), plaintext.end(), plaintext.begin(), ::tolower); //convert to lowercase
   plaintext.erase(remove_if(plaintext.begin(), plaintext.end(), ::isspace), plaintext.end()); //remove spaces
 
@@ -79,74 +78,64 @@ TrieDictionary pullWords(int wordlength)
   return dic;
 }
 
-void generateKeysRec(std::string prefix, int keyLength)
+void generateKeysRec(std::string prefix, int keyLength, SyncQueue<std::string>* q2)
 {
   if (keyLength == 0)
   {
-    std::cout<<prefix<<"\n";
+    q2->enqueue(prefix);
     return;
   }
 
   for(int i=0; i<26; ++i)
   {
     std::string temp = prefix + chars[i];
-    generateKeysRec(temp, keyLength-1);
+    generateKeysRec(temp, keyLength-1, q2);
   }
 }
 
-void generateKeys(int keyLength)
+void generateKeys(int keyLength, SyncQueue<std::string>* q)
 {
-  generateKeysRec("", keyLength);
+  generateKeysRec("", keyLength, q);
+}
+
+void breakingThread(std::string key, std::string ciphertext)
+{
+
 }
 
 void breakCipher(int keyLength, int firstWordLength, std::string ciphertext)
 {
-  TrieDictionary d = pullWords(firstWordLength);
+  transform(ciphertext.begin(), ciphertext.end(), ciphertext.begin(), ::tolower);
+  std::string firstWord = ciphertext.substr(0, firstWordLength);
+
+  TrieDictionary dic = pullWords(firstWordLength);
+  SyncQueue<std::string>* buffer = new SyncQueue<std::string>();
+  generateKeys(keyLength, buffer);
+
+  while(!buffer->empty())
+  {
+    std::string key = buffer->dequeue();
+    std::string temp = vigenereDecrypt(key, firstWord);
+     if(dic.search(temp) == true)
+     {
+       std::cout<<vigenereDecrypt(key, ciphertext)<<"\n";
+     }
+  }
 }
-
-/*
-1. "MSOKKJCOSXOEEKDTOSLGFWCMCHSUSGX";
-
-key length = 2; firstWordLength = 6
-
-2. "OOPCULNWFRCFQAQJGPNARMEYUODYOUNRGWORQEPVARCEPBBSCEQYEARAJUYGWWYACYWBPRNEJBMDTEAEYCCFJNENSGWAQRTSJTGXNRQRMDGFEEPHSJRGFCFMACCB"
-
-keyLength=3; firstWordLength = 7
-
-3. "MTZHZEOQKASVBDOWMWMKMNYIIHVWPEXJA"
-
-keyLength=4; firstWordLength = 10
-
-4. "HUETNMIXVTMQWZTQMMZUNZXNSSBLNSJVSJQDLKR"
-
-keyLength=5; firstWordLength = 11
-
-5. "LDWMEKPOPSWNOAVBIDHIPCEWAETYRVOAUPSINOVDIEDHCDSELHCCPVHRPOHZUSERSFS"
-
-keyLength=6; firstWordLength = 9
-
-6. "VVVLZWWPBWHZDKBTXLDCGOTGTGRWAQWZSDHEMXLBELUMO"
-
-keyLength=7; firstWordLength = 13
-*/
 
 int main(int argc, char** argv)
 {
 
-  //if (argc > 1)
-  //{
-    //std::string s = vigenereEncrypt(key1, getPlaintext(argc, argv));
-    //std::cout<<s<<'\n';
-    //std::cout<<"decrypt: "<<vigenereDecrypt(key1, s)<<"\n";
+    breakCipher(2, 6, "MSOKKJCOSXOEEKDTOSLGFWCMCHSUSGX");
+    //breakCipher(3, 7, "OOPCULNWFRCFQAQJGPNARMEYUODYOUNRGWORQEPVARCEPBBSCEQYEARAJUYGWWYACYWBPRNEJBMDTEAEYCCFJNENSGWAQRTSJTGXNRQRMDGFEEPHSJRGFCFMACCB");
+    //breakCipher(4, 10, "MTZHZEOQKASVBDOWMWMKMNYIIHVWPEXJA");
+    //breakCipher(5, 11, "HUETNMIXVTMQWZTQMMZUNZXNSSBLNSJVSJQDLKR");
+    //breakCipher(6, 9, "LDWMEKPOPSWNOAVBIDHIPCEWAETYRVOAUPSINOVDIEDHCDSELHCCPVHRPOHZUSERSFS");
+    //breakCipher(7, 13, "VVVLZWWPBWHZDKBTXLDCGOTGTGRWAQWZSDHEMXLBELUMO");
 
-    //breakCipher(2, 6, "hello");
-    generateKeys(7);
+    //NOTE do not run with 6 or 7 currently
 
-  //}
-  //else
-  //{
   //  std::cout<<"\nUsage: ./project1 <plaintext string>\n";
-  //}
-  return 0;
 
+  return 0;
 }

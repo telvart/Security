@@ -3,17 +3,17 @@
 #include <string>
 #include <map>
 
-class Node
+class TrieNode
 {
   public:
-    Node()
+    TrieNode()
     {
       isEndOfWord = false;
       for (int i=0; i<26; i++)
         subtries[i] = nullptr;
     }
 
-    Node* subtries[26];
+    TrieNode* subtries[26];
     bool isEndOfWord;
 };
 
@@ -22,14 +22,19 @@ class TrieDictionary
 
 public:
 
-  Node* m_root;
+  TrieNode* m_root;
   std::map <char, int> alphabet;
   std::map <char, int>::iterator it;
 
   TrieDictionary()
   {
-    m_root = new Node();
+    m_root = new TrieNode();
     init();
+  }
+
+  ~TrieDictionary()
+  {
+    deleteTrie(m_root);
   }
 
   void init()
@@ -50,11 +55,11 @@ public:
   }
 
   // If not present, inserts key into trie
-  // If the key is prefix of trie node, just
-  // marks leaf node
+  // If the key is prefix of trie TrieNode, just
+  // marks leaf TrieNode
   void insert(std::string key)
   {
-      Node* traverse = m_root;
+      TrieNode* traverse = m_root;
       int index;
 
       for (int i = 0; i < key.length(); i++)
@@ -62,12 +67,12 @@ public:
           index = alphabet.find(key[i]) -> second;
           if (traverse->subtries[index] == nullptr)
           {
-            traverse->subtries[index] = new Node();
+            traverse->subtries[index] = new TrieNode();
           }
           traverse = traverse->subtries[index];
       }
 
-      // mark last node as leaf
+      // mark last TrieNode as leaf
       traverse->isEndOfWord = true;
   }
 
@@ -75,17 +80,31 @@ public:
   // false
   bool search(std::string key)
   {
-      Node* traverse = m_root;
+      TrieNode* traverse = m_root;
+      int index;
 
       for (int i = 0; i < key.length(); i++)
       {
-          int index = key[i] - 97;
+          index = alphabet.find(key[i]) -> second;
           if (traverse->subtries[index] == nullptr)
               return false;
 
           traverse = traverse->subtries[index];
       }
       return ((traverse != nullptr) && traverse->isEndOfWord);
+  }
+
+  void deleteTrie(TrieNode* subtrie)
+  {
+    if(subtrie == nullptr)
+      return;
+
+    for(int i = 0; i<26; i++)
+    {
+      deleteTrie(subtrie->subtries[i]);
+    }
+    delete subtrie;
+
   }
 
 };
