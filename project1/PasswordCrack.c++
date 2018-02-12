@@ -76,6 +76,26 @@ TrieDictionary pullWords(int wordlength)
   return dic;
 }
 
+void generateKeysRec(std::string prefix, int keyLength)
+{
+  if (keyLength == 0)
+  {
+    std::cout<<prefix<<"\n";
+    return;
+  }
+
+  for(int i=0; i<26; ++i)
+  {
+    std::string temp = prefix + chars[i];
+    generateKeysRec(temp, keyLength-1);
+  }
+}
+
+void generateKeys(int keyLength)
+{
+  generateKeysRec("", keyLength);
+}
+
 void breakCipher(int keyLength, int firstWordLength, std::string ciphertext)
 {
   TrieDictionary d = pullWords(firstWordLength);
@@ -86,19 +106,20 @@ std::string key1 = "eecs";
 int main(int argc, char** argv)
 {
 
-  if (argc > 1)
-  {
+  //if (argc > 1)
+  //{
     //std::string s = vigenereEncrypt(key1, getPlaintext(argc, argv));
     //std::cout<<s<<'\n';
     //std::cout<<"decrypt: "<<vigenereDecrypt(key1, s)<<"\n";
 
-    breakCipher(2, 6, "hello");
+    //breakCipher(2, 6, "hello");
+    generateKeys(2);
 
-  }
-  else
-  {
-    std::cout<<"\nUsage: ./project1 <plaintext string>\n";
-  }
+  //}
+  //else
+  //{
+  //  std::cout<<"\nUsage: ./project1 <plaintext string>\n";
+  //}
   return 0;
 
 }
