@@ -61,46 +61,38 @@ std::string getPlaintext(int argc, char** argv)
   return plaintext;
 }
 
-TrieDictionary pullWords(int wordlength)
+TrieDictionary* pullWords(int wordlength)
 {
   std::ifstream fileIn("dict.txt");
   std::string temp;
-  TrieDictionary dic = TrieDictionary();
+  TrieDictionary* dic = new TrieDictionary();
   while(fileIn >> temp)
   {
     if(temp.length() == wordlength)
     {
       transform(temp.begin(), temp.end(), temp.begin(), ::tolower);
-      dic.insert(temp);
+      dic->insert(temp);
     }
   }
   fileIn.close();
   return dic;
 }
 
-void generateKeysRec(std::string prefix, int keyLength, SyncQueue<std::string>* q2)
+void generateKeysRec(std::string prefix, int keyLength, std::string ciphertext, std::string firstWord, TrieDictionary* dic)
 {
   if (keyLength == 0)
   {
-    q2->enqueue(prefix);
+    if(dic->search(vigenereDecrypt(prefix, firstWord)))
+      std::cout<<"\nKey: "<<prefix<<"\nPlaintext: "<<vigenereDecrypt(prefix, ciphertext)<<"\n";
+
     return;
   }
 
   for(int i=0; i<26; ++i)
   {
     std::string temp = prefix + chars[i];
-    generateKeysRec(temp, keyLength-1, q2);
+    generateKeysRec(temp, keyLength-1, ciphertext, firstWord, dic);
   }
-}
-
-void generateKeys(int keyLength, SyncQueue<std::string>* q)
-{
-  generateKeysRec("", keyLength, q);
-}
-
-void breakingThread(std::string key, std::string ciphertext)
-{
-
 }
 
 void breakCipher(int keyLength, int firstWordLength, std::string ciphertext)
@@ -108,30 +100,25 @@ void breakCipher(int keyLength, int firstWordLength, std::string ciphertext)
   transform(ciphertext.begin(), ciphertext.end(), ciphertext.begin(), ::tolower);
   std::string firstWord = ciphertext.substr(0, firstWordLength);
 
-  TrieDictionary dic = pullWords(firstWordLength);
-  SyncQueue<std::string>* buffer = new SyncQueue<std::string>();
-  generateKeys(keyLength, buffer);
+  TrieDictionary* dic = pullWords(firstWordLength);
 
-  while(!buffer->empty())
-  {
-    std::string key = buffer->dequeue();
-    std::string temp = vigenereDecrypt(key, firstWord);
-     if(dic.search(temp) == true)
-     {
-       std::cout<<vigenereDecrypt(key, ciphertext)<<"\n";
-     }
-  }
+  generateKeysRec("", keyLength, ciphertext, firstWord, dic);
+
+  delete dic;
+
 }
+
+
 
 int main(int argc, char** argv)
 {
 
-    breakCipher(2, 6, "MSOKKJCOSXOEEKDTOSLGFWCMCHSUSGX");
+    //breakCipher(2, 6, "MSOKKJCOSXOEEKDTOSLGFWCMCHSUSGX");
     //breakCipher(3, 7, "OOPCULNWFRCFQAQJGPNARMEYUODYOUNRGWORQEPVARCEPBBSCEQYEARAJUYGWWYACYWBPRNEJBMDTEAEYCCFJNENSGWAQRTSJTGXNRQRMDGFEEPHSJRGFCFMACCB");
     //breakCipher(4, 10, "MTZHZEOQKASVBDOWMWMKMNYIIHVWPEXJA");
     //breakCipher(5, 11, "HUETNMIXVTMQWZTQMMZUNZXNSSBLNSJVSJQDLKR");
     //breakCipher(6, 9, "LDWMEKPOPSWNOAVBIDHIPCEWAETYRVOAUPSINOVDIEDHCDSELHCCPVHRPOHZUSERSFS");
-    //breakCipher(7, 13, "VVVLZWWPBWHZDKBTXLDCGOTGTGRWAQWZSDHEMXLBELUMO");
+    breakCipher(7, 13, "VVVLZWWPBWHZDKBTXLDCGOTGTGRWAQWZSDHEMXLBELUMO");
 
     //NOTE do not run with 6 or 7 currently
 
