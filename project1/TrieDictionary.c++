@@ -1,20 +1,27 @@
-
-#include <iostream>
+/***************************************************************************************************************
+* NOTE Algorithms for this data structure were read from https://www.geeksforgeeks.org/trie-insert-and-search/                                                            *
+*      I modified to make a class and use as an implemntation of a dictionary with efficient searching operation
+* NOTE The destructor was written by me, not taken from the website
+*
+*****************************************************************************************************************/
 #include <string>
 #include <map>
+
+#ifndef TRIEDICTIONARY
+#define TRIEDICTIONARY
 
 class TrieNode
 {
   public:
     TrieNode()
     {
-      isEndOfWord = false;
+      isLeaf = false;
       for (int i=0; i<26; i++)
         subtries[i] = nullptr;
     }
 
     TrieNode* subtries[26];
-    bool isEndOfWord;
+    bool isLeaf;
 };
 
 class TrieDictionary
@@ -37,17 +44,13 @@ public:
   }
 
   void init()
-  { //didnt want to write a loop lol
+  {
     char a = 'a';
+
     for(int i=0; i<26; i++, a++)
-    {
       alphabet.insert(std::pair <char, int> (a,i));
-    }
   }
 
-  // If not present, inserts key into trie
-  // If the key is prefix of trie TrieNode, just
-  // marks leaf TrieNode
   void insert(std::string key)
   {
       TrieNode* traverse = m_root;
@@ -62,13 +65,9 @@ public:
           }
           traverse = traverse->subtries[index];
       }
-
-      // mark last TrieNode as leaf
-      traverse->isEndOfWord = true;
+      traverse->isLeaf = true;
   }
 
-  // Returns true if key presents in trie, else
-  // false
   bool search(std::string key)
   {
       TrieNode* traverse = m_root;
@@ -82,10 +81,10 @@ public:
 
           traverse = traverse->subtries[index];
       }
-      return ((traverse != nullptr) && traverse->isEndOfWord);
+      return ((traverse != nullptr) && traverse->isLeaf);
   }
 
-  void deleteTrie(TrieNode* subtrie)
+  void deleteTrie(TrieNode* subtrie) //used for destructor
   {
     if(subtrie == nullptr)
       return;
@@ -94,7 +93,7 @@ public:
       deleteTrie(subtrie->subtries[i]);
 
     delete subtrie;
-
   }
-
 };
+
+#endif

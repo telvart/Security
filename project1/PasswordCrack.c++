@@ -1,12 +1,14 @@
 
 #include <iostream>
-#include <string>
 #include <algorithm>
+#include <math.h>
 #include <fstream>
 
 #include "TrieDictionary.c++"
+#include "Timer.c++"
 
 char chars[] = {'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z'};
+Timer timer;
 
 std::string vigenereEncrypt(std::string key, std::string plaintext)
 {
@@ -18,7 +20,7 @@ std::string vigenereEncrypt(std::string key, std::string plaintext)
 
   for(int i = 0, j = 0; i < plaintext.size(); i++)
   {
-    x = ((plaintext[i]-97) + (key[j]) - 97) % 26; //encryption formula, corrects for ascii values
+    x = ((plaintext[i]-97) + (key[j]) - 97) % 26;
     j = (j+1) % key.size();
 
     ciphertext.push_back(chars[x]);
@@ -48,14 +50,11 @@ std::string getPlaintext(int argc, char** argv)
   for(int i=1; i<argc; i++)
   {
     if(i != argc-1)
-    {
       plaintext = plaintext + argv[i] + " ";
-    }
     else
-    {
       plaintext = plaintext + argv[i];
-    }
   }
+
   return plaintext;
 }
 
@@ -81,8 +80,10 @@ void generateKeysRec(std::string prefix, int keyLength, std::string ciphertext, 
   if (keyLength == 0)
   {
     if(dic->search(vigenereDecrypt(prefix, firstWord)))
-      std::cout<<"\nKey: "<<prefix<<"\nPlaintext: "<<vigenereDecrypt(prefix, ciphertext)<<"\n";
-
+    {
+      double d = timer.stop();
+      std::cout << "Key: " << prefix << " Time: " << d << " seconds\nPlaintext: " << vigenereDecrypt(prefix, ciphertext) << "\n";
+    }
     return;
   }
 
@@ -95,12 +96,16 @@ void generateKeysRec(std::string prefix, int keyLength, std::string ciphertext, 
 
 void breakCipher(int keyLength, int firstWordLength, std::string ciphertext)
 {
+  int numKeys = pow(26, keyLength);
   transform(ciphertext.begin(), ciphertext.end(), ciphertext.begin(), ::tolower);
   std::string firstWord = ciphertext.substr(0, firstWordLength);
 
   TrieDictionary* dic = pullWords(firstWordLength);
 
+  std::cout << "Key length: " << keyLength << "\n";
+  timer.start();
   generateKeysRec("", keyLength, ciphertext, firstWord, dic);
+  std::cout << "Total time to test all " << numKeys <<" keys: " << timer.stop() << "\n\n";
 
   delete dic;
 
@@ -112,12 +117,10 @@ int main(int argc, char** argv)
     breakCipher(2, 6, "MSOKKJCOSXOEEKDTOSLGFWCMCHSUSGX");
     breakCipher(3, 7, "OOPCULNWFRCFQAQJGPNARMEYUODYOUNRGWORQEPVARCEPBBSCEQYEARAJUYGWWYACYWBPRNEJBMDTEAEYCCFJNENSGWAQRTSJTGXNRQRMDGFEEPHSJRGFCFMACCB");
     breakCipher(4, 10, "MTZHZEOQKASVBDOWMWMKMNYIIHVWPEXJA");
-    //breakCipher(5, 11, "HUETNMIXVTMQWZTQMMZUNZXNSSBLNSJVSJQDLKR");
+    breakCipher(5, 11, "HUETNMIXVTMQWZTQMMZUNZXNSSBLNSJVSJQDLKR");
+    breakCipher(6, 9, "LDWMEKPOPSWNOAVBIDHIPCEWAETYRVOAUPSINOVDIEDHCDSELHCCPVHRPOHZUSERSFS");
+    breakCipher(7, 13, "VVVLZWWPBWHZDKBTXLDCGOTGTGRWAQWZSDHEMXLBELUMO");
 
-    //breakCipher(6, 9, "LDWMEKPOPSWNOAVBIDHIPCEWAETYRVOAUPSINOVDIEDHCDSELHCCPVHRPOHZUSERSFS");
-    //breakCipher(7, 13, "VVVLZWWPBWHZDKBTXLDCGOTGTGRWAQWZSDHEMXLBELUMO");
-
-    //std::cout<<vigenereEncrypt("eecs", "jayhawk")<<"\n";
   //  std::cout<<"\nUsage: ./project1 <plaintext string>\n";
 
   return 0;
