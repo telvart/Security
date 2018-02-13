@@ -24,7 +24,6 @@ public:
 
   TrieNode* m_root;
   std::map <char, int> alphabet;
-  std::map <char, int>::iterator it;
 
   TrieDictionary()
   {
@@ -39,19 +38,11 @@ public:
 
   void init()
   { //didnt want to write a loop lol
-    alphabet.insert(std::pair <char, int> ('a',0)); alphabet.insert(std::pair <char, int> ('b',1));
-    alphabet.insert(std::pair <char, int> ('c',2)); alphabet.insert(std::pair <char, int> ('d',3));
-    alphabet.insert(std::pair <char, int> ('e',4)); alphabet.insert(std::pair <char, int> ('f',5));
-    alphabet.insert(std::pair <char, int> ('g',6)); alphabet.insert(std::pair <char, int> ('h',7));
-    alphabet.insert(std::pair <char, int> ('i',8)); alphabet.insert(std::pair <char, int> ('j',9));
-    alphabet.insert(std::pair <char, int> ('k',10)); alphabet.insert(std::pair <char, int> ('l',11));
-    alphabet.insert(std::pair <char, int> ('m',12)); alphabet.insert(std::pair <char, int> ('n',13));
-    alphabet.insert(std::pair <char, int> ('o',14)); alphabet.insert(std::pair <char, int> ('p',15));
-    alphabet.insert(std::pair <char, int> ('q',16)); alphabet.insert(std::pair <char, int> ('r',17));
-    alphabet.insert(std::pair <char, int> ('s',18)); alphabet.insert(std::pair <char, int> ('t',19));
-    alphabet.insert(std::pair <char, int> ('u',20)); alphabet.insert(std::pair <char, int> ('v',21));
-    alphabet.insert(std::pair <char, int> ('w',22)); alphabet.insert(std::pair <char, int> ('x',23));
-    alphabet.insert(std::pair <char, int> ('y',24)); alphabet.insert(std::pair <char, int> ('z',25));
+    char a = 'a';
+    for(int i=0; i<26; i++, a++)
+    {
+      alphabet.insert(std::pair <char, int> (a,i));
+    }
   }
 
   // If not present, inserts key into trie
@@ -100,13 +91,10 @@ public:
       return;
 
     for(int i = 0; i<26; i++)
-    {
       deleteTrie(subtrie->subtries[i]);
-    }
+
     delete subtrie;
 
   }
 
 };
-
-//     int n = sizeof(keys)/sizeof(keys[0]);
