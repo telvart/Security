@@ -1,30 +1,32 @@
-t267e539@e1005d1665XQJH2:~/EECS_565/project1$ ./project1
+[telvart@localhost project1]$ ./project1
 Key length: 2
-Key: ks Time: 9.8e-05 seconds
+Key: ks Time: 7.8e-05 seconds
 Plaintext: caesarswifemustbeabovesuspicion
-Total time to test all 676 keys: 0.000248
+Total time to test all 676 keys: 0.000206
 
 Key length: 3
-Key: jay Time: 0.001204 seconds
+Key: jay Time: 0.000784 seconds
 Plaintext: fortunewhichhasagreatdealofpowerinothermattersbutespeciallyinwarcanbringaboutgreatchangesinasituationthroughveryslightforces
-Total time to test all 17576 keys: 0.003253
+Total time to test all 17576 keys: 0.002251
 
 Key length: 4
-Key: iwkd Time: 0.024418 seconds
+Key: iwkd Time: 0.024564 seconds
 Plaintext: experienceistheteacherofallthings
-Total time to test all 456976 keys: 0.071764
+Total time to test all 456976 keys: 0.066654
 
 Key length: 5
-Key: zienf Time: 1.86535 seconds
+Key: zienf Time: 1.52082 seconds
 Plaintext: imaginationismoreimportantthanknowledge
-Total time to test all 11881376 keys: 1.91568
+Total time to test all 11881376 keys: 1.56465
 
 Key length: 6
-Key: hacker Time: 11.9298 seconds
+Key: hacker Time: 9.68941 seconds
 Plaintext: educationiswhatremainsafteronehasforgottenwhatonehaslearnedinschool
-Total time to test all 308915776 keys: 44.4411
+Total time to test all 308915776 keys: 36.01
 
 Key length: 7
-Key: nichols Time: 737.529 seconds
+Key: nichols Time: 607.404 seconds
 Plaintext: intellectualssolveproblemsgeniusespreventthem
-Total time to test all -2147483648 keys: 1436.51
+Total time to test all -2147483648 keys: 1194.63
+
+[telvart@localhost project1]$

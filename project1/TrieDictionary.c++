@@ -1,7 +1,7 @@
 /***************************************************************************************************************
 * NOTE Algorithms for this data structure were read from https://www.geeksforgeeks.org/trie-insert-and-search/                                                            *
 *      I modified to make a class and use as an implemntation of a dictionary with efficient searching operation
-* NOTE The destructor was written by me, not taken from the website
+* NOTE The destructor is completely mine
 *
 *****************************************************************************************************************/
 #include <string>
